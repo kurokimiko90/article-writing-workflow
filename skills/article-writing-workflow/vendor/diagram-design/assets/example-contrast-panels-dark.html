@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>From review loop to running MVP · Dark</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --paper: #2d3142; --paper-2: #393e53; --ink: #f5f5f5; --muted: #bfc0c0;
+      --soft: #8e98ac; --rule: rgba(245,245,245,0.12); --rule-solid: rgba(191,192,192,0.25);
+      --accent: #f08a59; --accent-tint: rgba(240,138,89,0.10); --link: #6a95d8;
+      --meter-bed: rgba(245,245,245,0.06);
+      --sans: 'Geist', system-ui, sans-serif; --serif: 'Instrument Serif', serif;
+      --mono: 'Geist Mono', ui-monospace, monospace;
+    }
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 3rem 2rem; background: var(--paper); color: var(--ink); font-family: var(--sans); }
+    .frame { width: 100%; max-width: 1200px; }
+    .eyebrow { margin-bottom: 0.5rem; color: var(--muted); font: 500 0.66rem var(--mono); letter-spacing: 0.18em; text-transform: uppercase; }
+    h1 { margin-bottom: 1.5rem; color: var(--ink); font: 400 clamp(1.5rem, 2.4vw + 0.75rem, 2rem)/1.15 var(--serif); letter-spacing: -0.02em; }
+    svg { display: block; width: 100%; min-width: 1000px; }
+    .divider { stroke: var(--rule-solid); stroke-width: 0.8; stroke-dasharray: 4 4; opacity: 0.5; }
+    .panel-rule { stroke: var(--rule-solid); stroke-width: 0.8; }
+    .panel-tag { fill: var(--soft); font: 500 9px var(--mono); letter-spacing: 0.18em; }
+    .panel-name { fill: var(--ink); font: 600 14px var(--sans); }
+    .glyph { color: var(--ink); }
+    .glyph.accent { color: var(--accent); }
+    .ring { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+    .ring.ghost-stroke { opacity: 0.35; }
+    .conn { fill: none; stroke: var(--muted); stroke-width: 1; }
+    .ghost { opacity: 0.35; }
+    .ghost .glyph { color: var(--muted); }
+    .ghost .node-name { fill: var(--muted); }
+    .node-name { fill: var(--ink); font: 600 12px var(--sans); text-anchor: middle; }
+    .node-name.accent { fill: var(--accent); }
+    .sublabel { fill: var(--soft); font: 400 9px var(--mono); text-anchor: middle; }
+    .arrow-label { fill: var(--soft); font: 400 8px var(--mono); letter-spacing: 0.06em; text-anchor: middle; }
+    .arrow-label.start { text-anchor: start; }
+    .svg-eyebrow { fill: var(--muted); font: 500 9px var(--mono); letter-spacing: 0.18em; text-anchor: middle; }
+    .svg-eyebrow.start { text-anchor: start; }
+    .mask { fill: var(--paper); }
+    .meter-track { fill: var(--meter-bed); stroke: var(--rule-solid); stroke-width: 0.8; }
+    .meter-fill { fill: var(--ink); }
+    .meter-value { fill: var(--ink); font: 500 11px var(--mono); }
+    .legend-rule { stroke: var(--rule); stroke-width: 0.8; }
+    .legend-label { fill: var(--muted); font: 400 8px var(--mono); letter-spacing: 0.14em; }
+    .legend-item { fill: var(--soft); font: 400 8px var(--mono); letter-spacing: 0.06em; }
+  </style>
+</head>
+<body>
+  <main class="frame">
+    <p class="eyebrow">Contrast panels · Diagram Design</p>
+    <h1>From review loop to running MVP</h1>
+
+    <svg viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="contrast-panels-dark-title contrast-panels-dark-desc">
+      <title id="contrast-panels-dark-title">From review loop to running MVP</title>
+      <desc id="contrast-panels-dark-desc">Two panels carry the same operator, agent and reviewer: on the left the work circles a review loop and yields only a report nobody can run, and on the right a thin MVP becomes the artifact the pair improve daily and ship through written guardrails and checks.</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bfc0c0"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#f08a59"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6a95d8"/></marker>
+      </defs>
+      <rect width="1200" height="760" fill="#2d3142"/>
+
+      <!-- Panel frames: a tag, a name, a hairline. No box, no fill. -->
+      <text x="40" y="60" class="panel-tag">[BEFORE]</text>
+      <text x="128" y="60" class="panel-name">Hand it off, review forever</text>
+      <line class="panel-rule" x1="40" y1="76" x2="576" y2="76"/>
+      <text x="624" y="60" class="panel-tag">[AFTER]</text>
+      <text x="712" y="60" class="panel-name">Ship something that runs</text>
+      <line class="panel-rule" x1="624" y1="76" x2="1160" y2="76"/>
+
+      <!-- The gutter exists to say: no connector crosses here. -->
+      <line class="divider" x1="600" y1="48" x2="600" y2="700"/>
+
+      <!-- PANEL A · one operator, one agent, a review cycle, no artifact. -->
+      <!-- Arrows first so z-order puts every stroke behind the glyphs. -->
+      <path class="ring" d="M 229.57 217.03 A 72 72 0 0 1 285.03 161.57" marker-end="url(#arrow)"/>
+      <path class="ring" d="M 314.97 161.57 A 72 72 0 0 1 370.43 217.03" marker-end="url(#arrow)"/>
+      <path class="ring" d="M 370.43 246.97 A 72 72 0 0 1 314.97 302.43" marker-end="url(#arrow)"/>
+      <path class="ring" d="M 285.03 302.43 A 72 72 0 0 1 229.57 246.97" marker-end="url(#arrow)"/>
+      <line class="conn" x1="144" y1="232" x2="210" y2="232" marker-end="url(#arrow)"/>
+      <line class="conn" x1="390" y1="232" x2="470" y2="232" marker-end="url(#arrow)"/>
+      <line class="conn" x1="500" y1="308" x2="500" y2="410" marker-end="url(#arrow)"/>
+
+      <rect class="mask" x="159" y="210" width="48" height="16" rx="2"/>
+      <text x="183" y="222" class="arrow-label">BRIEF</text>
+      <rect class="mask" x="392" y="210" width="76" height="16" rx="2"/>
+      <text x="430" y="222" class="arrow-label">ANOTHER REPORT</text>
+      <rect class="mask" x="508" y="352" width="60" height="16" rx="2"/>
+      <text x="512" y="364" class="arrow-label start">FOR REVIEW</text>
+
+      <g class="glyph" transform="translate(88,208) scale(2)" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /> <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></g>
+      <text x="112" y="276" class="node-name">Operator</text>
+      <text x="112" y="292" class="sublabel">writes the brief</text>
+
+      <text x="300" y="134" class="svg-eyebrow">REVIEW LOOP</text>
+      <g class="glyph" transform="translate(216,220) scale(1)" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4" /> <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" /></g>
+      <g class="glyph" transform="translate(288,148) scale(1)" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /> <path d="M21 21l-6 -6" /></g>
+      <g class="glyph" transform="translate(360,220) scale(1)" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4" /> <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" /> <path d="M12 16h.01" /></g>
+      <g class="glyph" transform="translate(288,292) scale(1)" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /> <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></g>
+      <g class="glyph" transform="translate(276,208) scale(2)" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -4" /> <path d="M12 2v2" /> <path d="M9 12v9" /> <path d="M15 12v9" /> <path d="M5 16l4 -2" /> <path d="M15 14l4 2" /> <path d="M9 18h6" /> <path d="M10 8v.01" /> <path d="M14 8v.01" /></g>
+      <text x="300" y="276" class="node-name">Agent</text>
+      <text x="300" y="336" class="arrow-label">AUTO-RETRY · NO ARTIFACT</text>
+
+      <g class="glyph" transform="translate(476,208) scale(2)" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4" /> <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" /> <path d="M9 9l1 0" /> <path d="M9 13l6 0" /> <path d="M9 17l6 0" /></g>
+      <text x="500" y="276" class="node-name">Report</text>
+      <text x="500" y="292" class="sublabel">nothing to run</text>
+
+      <g class="glyph" transform="translate(476,416) scale(2)" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /> <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></g>
+      <text x="500" y="484" class="node-name">Reviewer</text>
+      <text x="500" y="500" class="sublabel">no way to verify</text>
+
+      <!-- PANEL B · same cast, rewired around one artifact that runs. -->
+      <path class="ring ghost-stroke" d="M 709.15 148.96 A 44 44 0 0 1 741.85 205.60" marker-end="url(#arrow)"/>
+      <path class="ring ghost-stroke" d="M 732.70 221.44 A 44 44 0 0 1 667.30 221.44" marker-end="url(#arrow)"/>
+      <path class="ring ghost-stroke" d="M 658.15 205.60 A 44 44 0 0 1 690.85 148.96" marker-end="url(#arrow)"/>
+      <line class="conn" x1="750" y1="192" x2="870" y2="192" marker-end="url(#arrow)"/>
+      <path class="conn" d="M 900 268 V 328 Q 900 336 892 336 H 720 Q 712 336 712 344 V 370" marker-end="url(#arrow)"/>
+      <line class="conn" x1="744" y1="388" x2="970" y2="388" marker-end="url(#arrow)"/>
+      <line class="conn" x1="970" y1="412" x2="744" y2="412" marker-end="url(#arrow)"/>
+      <line class="conn" x1="712" y1="476" x2="712" y2="518" marker-end="url(#arrow)"/>
+      <line class="conn" x1="744" y1="548" x2="826" y2="548" marker-end="url(#arrow)"/>
+      <line class="conn" x1="888" y1="548" x2="970" y2="548" marker-end="url(#arrow)"/>
+
+      <rect class="mask" x="775" y="170" width="70" height="16" rx="2"/>
+      <text x="810" y="182" class="arrow-label">SUPERSEDED BY</text>
+      <rect class="mask" x="776" y="314" width="60" height="16" rx="2"/>
+      <text x="806" y="326" class="arrow-label">PUT TO USE</text>
+      <rect class="mask" x="830" y="366" width="54" height="16" rx="2"/>
+      <text x="857" y="378" class="arrow-label">WHAT BROKE</text>
+      <rect class="mask" x="830" y="422" width="54" height="16" rx="2"/>
+      <text x="857" y="434" class="arrow-label">NEXT SLICE</text>
+      <rect class="mask" x="720" y="480" width="76" height="16" rx="2"/>
+      <text x="724" y="492" class="arrow-label start">READY TO SHIP</text>
+      <rect class="mask" x="765" y="526" width="40" height="16" rx="2"/>
+      <text x="785" y="538" class="arrow-label">PASS</text>
+      <rect class="mask" x="907" y="526" width="44" height="16" rx="2"/>
+      <text x="929" y="538" class="arrow-label">GREEN</text>
+
+      <!-- The one ghost: superseded, still running, still silent. -->
+      <g class="ghost">
+        <g class="glyph" transform="translate(676,168) scale(2)" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -4" /> <path d="M12 2v2" /> <path d="M9 12v9" /> <path d="M15 12v9" /> <path d="M5 16l4 -2" /> <path d="M15 14l4 2" /> <path d="M9 18h6" /> <path d="M10 8v.01" /> <path d="M14 8v.01" /></g>
+        <text x="700" y="256" class="node-name">The same loop</text>
+        <text x="700" y="272" class="sublabel">still no artifact</text>
+      </g>
+
+      <!-- The one accent in the diagram: the pivot. -->
+      <g class="glyph accent" transform="translate(876,168) scale(2)" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" /> <path d="M12 12l8 -4.5" /> <path d="M12 12l0 9" /> <path d="M12 12l-8 -4.5" /> <path d="M16 5.25l-8 4.5" /></g>
+      <text x="900" y="236" class="node-name accent">Thin MVP</text>
+      <text x="900" y="252" class="sublabel">runs on day one</text>
+
+      <g class="glyph" transform="translate(688,376) scale(2)" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19l18 0" /> <path d="M5 7a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1l0 -8" /></g>
+      <text x="712" y="444" class="node-name">Operator</text>
+      <text x="712" y="460" class="sublabel">uses it daily</text>
+
+      <g class="glyph" transform="translate(976,376) scale(2)" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -4" /> <path d="M12 2v2" /> <path d="M9 12v9" /> <path d="M15 12v9" /> <path d="M5 16l4 -2" /> <path d="M15 14l4 2" /> <path d="M9 18h6" /> <path d="M10 8v.01" /> <path d="M14 8v.01" /></g>
+      <text x="1000" y="444" class="node-name">Agent</text>
+      <text x="1000" y="460" class="sublabel">scoped fixes</text>
+
+      <g class="glyph" transform="translate(688,524) scale(2)" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6" /> <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" /> <path d="M8 11v-4a4 4 0 1 1 8 0v4" /></g>
+      <text x="712" y="592" class="node-name">Guardrails</text>
+      <text x="712" y="608" class="sublabel">limits, written down</text>
+
+      <g class="glyph" transform="translate(832,524) scale(2)" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 8.04l-12.122 12.124a2.857 2.857 0 1 1 -4.041 -4.04l12.122 -12.124" /> <path d="M7 13h8" /> <path d="M19 15l1.5 1.6a2 2 0 1 1 -3 0l1.5 -1.6" /> <path d="M15 3l6 6" /></g>
+      <text x="856" y="592" class="node-name">Checks</text>
+      <text x="856" y="608" class="sublabel">run every change</text>
+
+      <g class="glyph" transform="translate(976,524) scale(2)" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3" /> <path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3" /> <path d="M14 9a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></g>
+      <text x="1000" y="592" class="node-name">Shipped</text>
+      <text x="1000" y="608" class="sublabel">in real hands</text>
+
+      <!-- One metric, one unit, one track length. Both panels or neither. -->
+      <text x="40" y="656" class="svg-eyebrow start">SHARE THE REVIEWER CAN RUN</text>
+      <rect class="meter-track" x="40" y="664" width="240" height="16" rx="8"/>
+      <rect class="meter-fill" x="40" y="664" width="36" height="16" rx="8"/>
+      <text x="292" y="676" class="meter-value">15%</text>
+      <text x="624" y="656" class="svg-eyebrow start">SHARE THE REVIEWER CAN RUN</text>
+      <rect class="meter-track" x="624" y="664" width="240" height="16" rx="8"/>
+      <rect class="meter-fill" x="624" y="664" width="192" height="16" rx="8"/>
+      <text x="876" y="676" class="meter-value">80%</text>
+
+      <line class="legend-rule" x1="40" y1="716" x2="1160" y2="716"/>
+      <text x="40" y="732" class="legend-label">LEGEND</text>
+      <text x="140" y="732" class="legend-item">ICON-NODE = ACTOR OR ARTIFACT</text>
+      <text x="400" y="732" class="legend-item">RING = A CYCLE INSIDE ONE PANEL</text>
+      <text x="660" y="732" class="legend-item">FADED = SUPERSEDED, NOT DELETED</text>
+      <text x="920" y="732" class="legend-item">CORAL = THE ONE PIVOT</text>
+    </svg>
+  </main>
+</body>
+</html>

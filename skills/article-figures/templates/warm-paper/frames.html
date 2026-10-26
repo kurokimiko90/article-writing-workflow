@@ -1,0 +1,300 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8">
+<!-- ポイントブランド接続の振り返り 配図（日本語版）。紙・マーカー・Miko の warm-paper スタイル。#fN を単独で截圖 -->
+<title>ポイントブランド接続 配図</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&display=block">
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<style>
+:root{
+  --paper:#F6F2EA;--paper-2:#EEE7DA;--card:#FFFDF8;--ink:#1F2A27;--ink-2:#67716B;--rule:#DCD3C4;
+  --mark:#D9F05B;--mark-soft:#EEF8C2;--teal:#11645B;--teal-soft:#D7EAE5;
+  --apricot:#F2A97E;--apricot-soft:#FBE4D4;
+  --fs-hl:44px;--fs-lg:30px;--fs-md:20px;--fs-sm:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:"Zen Kaku Gothic New","Hiragino Sans",sans-serif;-webkit-font-smoothing:antialiased}
+body:has(.f:target) .f:not(:target){display:none}
+body:not(:has(.f:target)){display:grid;gap:40px;padding:40px;background:#a9a39a}
+.f{position:relative;isolation:isolate;width:1200px;height:675px;overflow:hidden;padding:40px 64px 52px;display:flex;flex-direction:column;
+  background:var(--paper);white-space:nowrap;font-feature-settings:"palt";letter-spacing:.02em;
+  background-image:radial-gradient(circle at 94% 6%,rgba(242,169,126,.22),transparent 32%),radial-gradient(circle at 3% 97%,rgba(217,240,91,.28),transparent 30%)}
+.f::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:9;opacity:.09;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.f.cover{width:1280px;height:670px;padding:0;flex-direction:row}
+.hl{flex:none;font-weight:900;font-size:var(--fs-hl);line-height:1.25;letter-spacing:.01em;margin:0 0 18px 4px;position:relative;z-index:2}
+mark{background:linear-gradient(176deg,transparent 52%,var(--mark) 53%,var(--mark) 90%,transparent 91%);color:inherit;padding:0 .08em}
+.bd{flex:1;position:relative}.bd.ctr{display:flex;flex-direction:column;justify-content:center;padding-bottom:30px}
+.card{background:var(--card);border-radius:18px;box-shadow:0 1px 0 var(--rule),0 14px 30px -14px rgba(90,60,30,.22)}
+.bdg{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--apricot-soft);color:var(--ink)}
+.bdg svg{width:21px;height:21px;stroke-width:1.9}
+.bdg.lime{background:var(--mark)}.bdg.teal{background:var(--teal-soft);color:var(--teal)}.bdg.ink{background:var(--ink);color:var(--paper)}
+.bdg.lg{width:56px;height:56px}.bdg.lg svg{width:26px;height:26px}
+.lab{display:flex;align-items:center;gap:8px;font-size:var(--fs-sm);font-weight:700;letter-spacing:.06em;color:var(--ink-2)}
+.lab svg{width:18px;height:18px;color:var(--apricot);stroke-width:2.2}
+.it{display:flex;align-items:center;gap:14px;font-size:var(--fs-md);font-weight:700}
+.sm{font-size:var(--fs-sm);font-weight:500;color:var(--ink-2)}
+.md{font-size:var(--fs-md);font-weight:700}
+.lg{font-size:var(--fs-lg);font-weight:900}
+.num{font-size:var(--fs-sm);font-weight:900;color:var(--teal);letter-spacing:.08em}
+.miko{position:absolute;right:30px;bottom:18px;height:118px;width:auto;z-index:8;pointer-events:none;filter:drop-shadow(0 8px 10px rgba(90,60,30,.16))}
+svg.links{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:1}
+.lbl{position:absolute;transform:translate(-50%,-50%);font-size:var(--fs-sm);font-weight:700;color:var(--ink-2);z-index:2}
+.abs{position:absolute}
+
+/* cover */
+.cover .l{flex:1.25;padding:64px 0 56px 68px;display:flex;flex-direction:column;justify-content:center;gap:26px}
+.cover .kick{display:flex;align-items:center;gap:10px;font-size:var(--fs-sm);font-weight:700;color:var(--ink-2)}
+.cover .kick b{font-weight:700;letter-spacing:.1em;background:var(--ink);color:var(--paper);padding:4px 10px;border-radius:6px}
+.cover .t{font-weight:900;font-size:58px;line-height:1.3;letter-spacing:.01em}
+.cover .r{flex:1;position:relative;display:flex;flex-direction:column;justify-content:center;gap:0;padding:0 64px 0 10px}
+.cover .r .st{display:flex;align-items:center;gap:14px;padding:12px 18px 12px 12px;font-size:var(--fs-md);font-weight:700;width:330px}
+.cover .r .vl{width:2px;height:26px;background:var(--ink-2);margin-left:34px;opacity:.6}
+.cover .miko{right:auto;left:560px;bottom:34px;height:124px}
+
+/* f1 */
+.f1m{display:flex;align-items:center;gap:0}
+.tiles{display:grid;grid-template-columns:repeat(4,46px);gap:10px;margin-top:22px}
+.tiles i{display:block;height:30px;border-radius:8px;background:var(--paper-2)}
+.tiles i.on{background:var(--teal)}
+.rows{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.rows i{display:block;height:8px;border-radius:4px;background:var(--teal-soft)}
+.qs{display:flex;flex-direction:column;gap:14px}
+.q{padding:14px 20px}
+.bot{display:flex;gap:18px;margin-top:30px}
+.bot .card{flex:1;padding:16px 20px}
+
+/* f2 */
+.cons{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:10px}
+.cons .card{display:flex;flex-direction:column;gap:14px;padding:22px 20px}
+.cons .md{line-height:1.5}
+
+/* f3 */
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.colh{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:2px solid var(--teal);margin-bottom:16px}
+.cols .card{margin-bottom:14px;padding:18px 22px}
+.band{display:flex;margin-top:34px}
+.band>div{flex:1;display:flex;align-items:center;gap:14px;padding:20px 24px}
+.band .me{border-radius:18px 0 0 18px}
+.band .tm{border-radius:0 18px 18px 0;background:var(--mark-soft)}
+
+/* f4 */
+.stairs{display:flex;gap:14px;align-items:flex-end;height:330px;margin-top:8px}
+.stp{flex:1;display:flex;flex-direction:column;gap:10px;padding:18px 16px;border-radius:18px 18px 0 0}
+.stp .md{line-height:1.5}
+.lane{display:flex;align-items:center;gap:26px;padding:16px 24px;margin-top:22px;margin-right:150px}
+
+/* f5 */
+.chips{position:absolute;left:0;bottom:0;display:flex;align-items:center;gap:12px}
+.chip{padding:8px 18px;border-radius:99px;background:var(--card);box-shadow:0 1px 0 var(--rule)}
+.n{position:absolute;display:flex;align-items:center;gap:14px;padding:18px 22px}
+
+/* f6 */
+.f6{display:flex;gap:0;margin-top:10px}
+.f6 .left{width:380px;display:flex;flex-direction:column;gap:16px}
+.grid{margin-left:70px;flex:1;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-content:start}
+.grid .card{padding:12px 18px}
+.std{margin-top:22px;padding:16px 22px;margin-right:150px}
+
+/* f7 */
+#f7{justify-content:center;gap:52px}
+.hero{font-size:56px;font-weight:900;line-height:1.35}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;margin-right:0}
+.steps .card{display:flex;flex-direction:column;gap:12px;padding:22px 22px;min-height:172px}
+.steps .md{line-height:1.5}
+#f7 .miko{bottom:auto;top:40px}
+</style></head><body>
+
+<!-- ===== 00 cover ===== -->
+<section class="f cover" id="f0">
+<img class="miko" src="assets/miko/cover.png" alt="">
+  <div class="l">
+    <div class="kick"><b>振り返り</b>ポイントブランド接続</div>
+    <h1 class="t">初めての<br>ポイントブランド接続<br><mark>期限内リリース</mark>まで</h1>
+  </div>
+  <div class="r">
+    <div class="card st"><i class="bdg"><i data-lucide="circle-help"></i></i>課題が見えない</div><div class="vl"></div>
+    <div class="card st"><i class="bdg teal"><i data-lucide="message-circle"></i></i>一つずつ確認</div><div class="vl"></div>
+    <div class="card st"><i class="bdg teal"><i data-lucide="flag"></i></i>期限内にリリース</div><div class="vl"></div>
+    <div class="card st"><i class="bdg lime"><i data-lucide="clipboard-list"></i></i>250項目のテンプレート</div>
+  </div>
+</section>
+
+<!-- ===== 01 規則とAPI ===== -->
+<section class="f" id="f1">
+<img class="miko" src="assets/miko/look.png" alt="" style="right:auto;left:1040px;top:24px;bottom:auto;height:100px">
+  <h2 class="hl">十数本のAPIを、<mark>一つずつ確認</mark></h2>
+  <div class="bd ctr">
+    <div class="f1m">
+      <div class="card" style="width:270px;padding:22px 24px" id="stack">
+        <div class="it"><i class="bdg teal"><i data-lucide="code-xml"></i></i>十数本のAPI</div>
+        <div class="tiles"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on" id="tile"></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="card" style="width:270px;margin-left:56px;padding:22px 24px;box-shadow:0 0 0 2px var(--teal) inset,0 14px 30px -14px rgba(90,60,30,.22)" id="big">
+        <div class="md">大きいAPIは1本で</div>
+        <div style="font-size:56px;font-weight:900;color:var(--teal);line-height:1.15">100+<span class="md"> 項目</span></div>
+        <div class="rows"><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="qs" style="margin-left:64px;flex:1">
+        <div class="card q it" id="q1"><i class="bdg"><i data-lucide="check"></i></i>必須か？</div>
+        <div class="card q it" id="q2"><i class="bdg"><i data-lucide="search"></i></i>こちらで提供できるか？</div>
+        <div class="card q it" id="q3"><i class="bdg"><i data-lucide="circle-help"></i></i>ない情報はどう扱うか？</div>
+      </div>
+    </div>
+    <div class="bot">
+      <div class="card it"><i class="bdg teal"><i data-lucide="book-open"></i></i>ブランド規則を一つずつ確認</div>
+      <div class="card it"><i class="bdg teal"><i data-lucide="triangle-alert"></i></i>ブランド指定の例外処理</div>
+      <div class="card it"><i class="bdg teal"><i data-lucide="receipt"></i></i>レシートをブランド書式で</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 02 制約 ===== -->
+<section class="f" id="f2">
+  <h2 class="hl">制約は多く、<mark>期限は一つ</mark></h2>
+  <div class="bd">
+    <div class="cons">
+      <div class="card" id="c1"><i class="bdg teal"><i data-lucide="network"></i></i><span class="md">先方指定の<br>専用線で接続</span></div>
+      <div class="card" id="c2"><i class="bdg teal"><i data-lucide="file-symlink"></i></i><span class="md">ファイル転送の<br>特殊な要件</span></div>
+      <div class="card" id="c3"><i class="bdg teal"><i data-lucide="credit-card"></i></i><span class="md">磁気ポイントカード<br>可能な限り対応</span></div>
+      <div class="card" id="c4"><i class="bdg teal"><i data-lucide="users"></i></i><span class="md">他の開発チーム<br>との調整</span></div>
+      <div class="card" id="c5"><i class="bdg teal"><i data-lucide="store"></i></i><span class="md">運用部門の<br>事前準備</span></div>
+    </div>
+    <div class="card it abs" id="s" style="left:0;bottom:6px;padding:14px 20px"><i class="bdg"><i data-lucide="circle-help"></i></i>初めての接続</div>
+    <div class="card it abs" id="g" style="right:0;bottom:6px;padding:14px 22px;background:var(--mark-soft);box-shadow:0 0 0 2px var(--mark) inset,0 14px 30px -14px rgba(90,60,30,.22)"><i class="bdg lime"><i data-lucide="flag"></i></i><span class="lg">ブランド指定の期限</span></div>
+  </div>
+</section>
+
+<!-- ===== 03 役割 ===== -->
+<section class="f" id="f3">
+<img class="miko" src="assets/miko/ok.png" alt="" style="right:40px;top:22px;bottom:auto;height:100px">
+  <h2 class="hl">私の担当は<mark>分析・対話・調整</mark></h2>
+  <div class="bd ctr">
+    <div class="cols">
+      <div><div class="colh"><i class="bdg teal"><i data-lucide="search"></i></i><span class="lg">分析</span></div>
+        <div class="card md">要件分析と影響評価</div><div class="card md">PRDとプロトタイプ</div></div>
+      <div><div class="colh"><i class="bdg teal"><i data-lucide="message-circle"></i></i><span class="lg">対話</span></div>
+        <div class="card md">パートナーとのQA</div><div class="card md">ネットワーク要件の確認</div></div>
+      <div><div class="colh"><i class="bdg teal"><i data-lucide="users"></i></i><span class="lg">調整</span></div>
+        <div class="card md">バック・フロント・UI</div><div class="card md">運用部門のリリース準備</div></div>
+    </div>
+    <div class="band">
+      <div class="card me it"><i class="bdg teal"><i data-lucide="user"></i></i>私：分析・対話・調整</div>
+      <div class="card tm it"><i class="bdg lime"><i data-lucide="users"></i></i>開発とリリース：チームの成果</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 04 進め方 ===== -->
+<section class="f" id="f4">
+  <h2 class="hl">疑問を出し切ってから、<mark>一つずつ確認</mark></h2>
+  <div class="bd">
+    <div class="stairs">
+      <div class="card stp" style="height:200px"><i class="bdg"><i data-lucide="circle-help"></i></i><span class="num">01</span><span class="md">疑問を整理<br>経験者に聞く</span></div>
+      <div class="card stp" style="height:226px"><i class="bdg teal"><i data-lucide="pencil-line"></i></i><span class="num">02</span><span class="md">資料と要件の<br>要点を記録</span></div>
+      <div class="card stp" style="height:252px"><i class="bdg teal"><i data-lucide="calendar-days"></i></i><span class="num">03</span><span class="md">定例会と<br>QA回答の仕組み</span></div>
+      <div class="card stp" style="height:278px"><i class="bdg teal"><i data-lucide="file-text"></i></i><span class="num">04</span><span class="md">要件説明・PRD<br>プロトタイプ更新</span></div>
+      <div class="card stp" style="height:304px"><i class="bdg teal"><i data-lucide="monitor"></i></i><span class="num">05</span><span class="md">バック・フロント<br>UIと継続対話</span></div>
+      <div class="card stp" style="height:330px;box-shadow:0 0 0 2px var(--teal) inset"><i class="bdg teal"><i data-lucide="sun"></i></i><span class="num">06</span><span class="md">朝会で<br>進捗を追う</span></div>
+    </div>
+    <div class="card lane" style="background:var(--mark-soft)">
+      <span class="md" style="font-weight:900">並行して</span>
+      <span class="it"><i class="bdg lime"><i data-lucide="network"></i></i>ネットワーク要件の確認</span>
+      <span class="it"><i class="bdg lime"><i data-lucide="store"></i></i>運用の事前準備</span>
+    </div>
+  </div>
+<img class="miko" src="assets/miko/cheer.png" alt="">
+</section>
+
+<!-- ===== 05 設計判断 ===== -->
+<section class="f" id="f5">
+  <h2 class="hl">最小限の変更で、<mark>要件を満たす</mark></h2>
+  <div class="bd" id="st5">
+    <div class="card n" id="A" style="left:0;top:150px"><i class="bdg teal"><i data-lucide="book-open"></i></i><span class="md">ブランド要件</span></div>
+    <div class="card n" id="B" style="left:250px;top:132px;box-shadow:0 0 0 2px var(--ink) inset"><i class="bdg"><i data-lucide="circle-help"></i></i><span class="md">既存処理で<br>満たせるか？</span></div>
+    <div class="card n" id="C" style="left:540px;top:6px"><i class="bdg teal"><i data-lucide="repeat-2"></i></i><span class="md">既存パターンを踏襲</span></div>
+    <div class="card n" id="D" style="left:540px;top:262px"><i class="bdg teal"><i data-lucide="layers"></i></i><span class="md">再利用範囲を評価<br><span class="sm">既存ブランド＋今後のブランド</span></span></div>
+    <div class="card n" id="E" style="right:0;top:132px;background:var(--mark-soft);box-shadow:0 0 0 2px var(--mark) inset"><i class="bdg lime"><i data-lucide="target"></i></i><span class="md" style="font-weight:900">最小限の変更で<br>要件を満たす</span></div>
+    <div class="chips"><span class="sm">対象</span><span class="chip md">レシート</span><span class="chip md">エラー表示</span><span class="chip md">ファイル転送と例外</span><span class="chip md">運用面の変更</span></div>
+  </div>
+</section>
+
+<!-- ===== 06 成果 ===== -->
+<section class="f" id="f6">
+  <h2 class="hl">期限内にリリース、<mark>経験をテンプレートに</mark></h2>
+  <div class="bd">
+    <div class="f6">
+      <div class="left">
+        <div class="card it" style="padding:18px 22px"><i class="bdg teal"><i data-lucide="flag"></i></i><div>期限内に本番リリース<br><span class="sm">チームの成果</span></div></div>
+        <div class="card" id="tpl" style="flex:1;padding:20px 24px;background:var(--mark-soft);box-shadow:0 0 0 2px var(--mark) inset;display:flex;flex-direction:column;justify-content:center">
+          <div style="font-size:64px;font-weight:900;line-height:1.1">250<span class="lg"> 項目</span></div>
+          <div class="md" style="margin-top:6px">ポイントブランド接続テンプレート</div>
+          <div class="sm" style="margin-top:4px">今後の新ブランド接続の参考に</div>
+        </div>
+      </div>
+      <div class="grid" id="grid">
+        <div class="card it"><i class="bdg teal"><i data-lucide="book-open"></i></i>ブランド要件</div>
+        <div class="card it"><i class="bdg teal"><i data-lucide="code-xml"></i></i>API確認項目</div>
+        <div class="card it"><i class="bdg teal"><i data-lucide="triangle-alert"></i></i>例外処理</div>
+        <div class="card it"><i class="bdg teal"><i data-lucide="network"></i></i>ネットワーク</div>
+        <div class="card it"><i class="bdg teal"><i data-lucide="file-symlink"></i></i>ファイル転送</div>
+        <div class="card it"><i class="bdg teal"><i data-lucide="flask-conical"></i></i>テスト</div>
+        <div class="card it" style="grid-column:span 2"><i class="bdg teal"><i data-lucide="store"></i></i>運用事項</div>
+      </div>
+    </div>
+    <div class="card it std"><i class="bdg"><i data-lucide="layers"></i></i>フロント・バックの標準化：今回扱った操作と処理を土台に</div>
+  </div>
+<img class="miko" src="assets/miko/cheer.png" alt="">
+</section>
+
+<!-- ===== 07 結び ===== -->
+<section class="f" id="f7">
+<img class="miko" src="assets/miko/ok.png" alt="">
+  <div class="hero">初めてで経験がないなら<br><mark>経験を残していく</mark></div>
+  <div class="steps">
+    <div class="card" id="s1"><i class="bdg teal"><i data-lucide="search"></i></i><span class="num">01</span><span class="md">まず課題を<br>整理する</span></div>
+    <div class="card" id="s2"><i class="bdg teal"><i data-lucide="message-circle"></i></i><span class="num">02</span><span class="md">確認と調整を<br>続ける</span></div>
+    <div class="card" id="s3"><i class="bdg teal"><i data-lucide="layers"></i></i><span class="num">03</span><span class="md">再利用を評価<br>変更は最小限に</span></div>
+    <div class="card" id="s4" style="background:var(--mark-soft);box-shadow:0 0 0 2px var(--mark) inset"><i class="bdg lime"><i data-lucide="clipboard-list"></i></i><span class="num">04</span><span class="md" style="font-weight:900">経験を残す</span></div>
+  </div>
+</section>
+
+<script>
+lucide.createIcons({attrs:{'stroke-width':1.9}});
+const NS='http://www.w3.org/2000/svg',TEAL='#11645B',INK2='#67716B';
+const $=id=>document.getElementById(id);
+function L(sec){let s=sec.querySelector(':scope>svg.links');if(!s){s=document.createElementNS(NS,'svg');s.setAttribute('class','links');sec.appendChild(s);}return s;}
+function mk(sec,t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);L(sec).appendChild(e);return e;}
+function rel(el,sec){const r=el.getBoundingClientRect(),o=sec.getBoundingClientRect();return{l:r.left-o.left,t:r.top-o.top,r:r.right-o.left,b:r.bottom-o.top,w:r.width,h:r.height};}
+function head(sec,x,y,dir,c){const k=10,p={r:`${x} ${y} ${x-k} ${y-k*.6} ${x-k} ${y+k*.6}`,d:`${x} ${y} ${x-k*.6} ${y-k} ${x+k*.6} ${y-k}`,u:`${x} ${y} ${x-k*.6} ${y+k} ${x+k*.6} ${y+k}`}[dir];mk(sec,'polygon',{points:p,fill:c||TEAL});}
+function path(sec,d,o={}){mk(sec,'path',Object.assign({d,fill:'none',stroke:o.c||TEAL,'stroke-width':o.w||2,'stroke-linejoin':'round','stroke-linecap':'round'},o.dash?{'stroke-dasharray':o.dash}:{}));}
+function label(sec,x,y,t){const d=document.createElement('div');d.className='lbl';d.textContent=t;d.style.left=x+'px';d.style.top=y+'px';sec.appendChild(d);}
+function draw(){
+  const g=6;
+  // f1
+  let s=$('f1'),t=rel($('tile'),s),b=rel($('big'),s),y=t.t+t.h/2;
+  path(s,`M${t.r+g} ${y}H${b.l-g-2}`);head(s,b.l-g,y,'r');
+  ['q1','q2','q3'].forEach(id=>{const q=rel($(id),s),y1=b.t+b.h/2,y2=q.t+q.h/2,mx=(b.r+q.l)/2;path(s,`M${b.r+g} ${y1}H${mx}V${y2}H${q.l-g-2}`);head(s,q.l-g,y2,'r');});
+  // f2
+  s=$('f2');const S=rel($('s'),s),G=rel($('g'),s),ly=S.t-44,x0=64,x1=1136;
+  path(s,`M${x0} ${ly}H${x1-4}`,{w:3});head(s,x1+6,ly,'r');
+  for(let i=1;i<=5;i++){const c=rel($('c'+i),s),x=c.l+c.w/2;path(s,`M${x} ${c.b+g}V${ly-12}`,{dash:'1 8'});mk(s,'circle',{cx:x,cy:ly,r:7,fill:TEAL});}
+  path(s,`M${S.l+24} ${ly}V${S.t-g}`);path(s,`M${G.r-28} ${ly}V${G.t-g}`,{c:'#A9C21F',w:2.5});
+  // f5
+  s=$('f5');const A=rel($('A'),s),B=rel($('B'),s),C=rel($('C'),s),D=rel($('D'),s),E=rel($('E'),s);
+  $('A').style.top=(parseFloat($('B').style.top)+(B.h-A.h)/2)+'px';
+  const A2=rel($('A'),s),by=B.t+B.h/2,bx=B.l+B.w/2;
+  path(s,`M${A2.r+g} ${by}H${B.l-g-2}`);head(s,B.l-g,by,'r');
+  const cy=C.t+C.h/2,dy=D.t+D.h/2;
+  path(s,`M${bx} ${B.t-g}V${cy}H${C.l-g-2}`);head(s,C.l-g,cy,'r');label(s,bx+(C.l-bx)/2,cy+22,'はい');
+  path(s,`M${bx} ${B.b+g}V${dy}H${D.l-g-2}`);head(s,D.l-g,dy,'r');label(s,bx+(D.l-bx)/2,dy-22,'いいえ');
+  const ex=E.l+E.w/2;
+  path(s,`M${C.r+g} ${cy}H${ex}V${E.t-g-2}`);head(s,ex,E.t-g,'d');
+  path(s,`M${D.r+g} ${dy}H${ex}V${E.b+g+2}`);head(s,ex,E.b+g,'u');
+  // f6
+  s=$('f6');const T=rel($('tpl'),s),R=rel($('grid'),s),gx=R.l-30,ty=T.t+T.h/2;
+  path(s,`M${T.r+g} ${ty}H${gx}M${gx} ${R.t+26}V${R.b-26}M${gx} ${R.t+26}H${R.l-g}M${gx} ${R.b-26}H${R.l-g}`);
+  // f7
+  s=$('f7');for(let i=1;i<4;i++){const a=rel($('s'+i),s),c=rel($('s'+(i+1)),s),yy=a.t+a.h/2;path(s,`M${a.r+g} ${yy}H${c.l-g-2}`);head(s,c.l-g,yy,'r');}
+}
+document.fonts.ready.then(()=>requestAnimationFrame(draw));
+</script>
+</body></html>

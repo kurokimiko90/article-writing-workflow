@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payments platform · Capability map · Dark</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --paper: #2d3142; --paper-2: #393e53; --ink: #f5f5f5; --muted: #bfc0c0;
+      --soft: #8e98ac; --rule: rgba(245,245,245,0.12); --accent: #f08a59;
+      --sans: 'Geist', system-ui, sans-serif; --serif: 'Instrument Serif', serif;
+      --mono: 'Geist Mono', ui-monospace, monospace;
+    }
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 3rem 2rem; background: var(--paper); color: var(--ink); font-family: var(--sans); }
+    .frame { width: 100%; max-width: 1200px; }
+    .eyebrow { margin-bottom: 0.5rem; color: var(--muted); font: 500 0.66rem var(--mono); letter-spacing: 0.18em; text-transform: uppercase; }
+    h1 { margin-bottom: 1.5rem; color: var(--ink); font: 400 clamp(1.5rem, 2.4vw + 0.75rem, 2rem)/1.15 var(--serif); letter-spacing: -0.02em; }
+    svg { display: block; width: 100%; min-width: 1040px; }
+    .eyebrow-tag { font: 500 8px var(--mono); letter-spacing: 0.14em; }
+    .tier-name { fill: var(--ink); font: 600 13px var(--sans); }
+    .domain-name { fill: var(--ink); font: 600 12px var(--sans); }
+    .rail-name { fill: var(--ink); font: 600 12px var(--sans); }
+    .chip-label { fill: var(--ink); font: 500 10.5px var(--sans); text-anchor: middle; }
+    .chip-label.external { fill: var(--muted); }
+    .bar-label { fill: var(--ink); font: 600 12px var(--sans); text-anchor: middle; }
+    .bar-label.focal { fill: var(--accent); }
+  </style>
+</head>
+<body>
+  <main class="frame">
+    <p class="eyebrow">Capability map · Diagram Design</p>
+    <h1>Payments platform · which domain owns what</h1>
+
+    <svg viewBox="0 0 1200 780" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="capability-map-dark-title capability-map-dark-desc">
+      <title id="capability-map-dark-title">Payments platform capability map</title>
+      <desc id="capability-map-dark-desc">Four tiers of platform capability — channels, payment products, payment core and external provider channels — with five named domains inside the core tier, a single payment router highlighted, and two cross-cutting rails: risk control constraining every tier on the left and shared services supporting every tier on the right.</desc>
+      <rect width="1200" height="780" fill="#2d3142"/>
+      
+      <!-- Tier bands: top is nearest the consumer, bottom is outside the platform -->
+      <rect x="184" y="56" width="832" height="60" rx="8" fill="rgba(245,245,245,0.02)" stroke="rgba(245,245,245,0.10)" stroke-width="0.8"/>
+      <text x="204" y="80" class="eyebrow-tag" fill="#8e98ac">T1</text>
+      <text x="204" y="98" class="tier-name">Channels</text>
+      <rect x="336" y="72" width="212" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="442" y="90" class="chip-label">Commerce app</text>
+      <rect x="560" y="72" width="212" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="666" y="90" class="chip-label">Merchant console</text>
+      <rect x="784" y="72" width="212" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="890" y="90" class="chip-label">Ops console</text>
+      <rect x="184" y="128" width="832" height="60" rx="8" fill="rgba(245,245,245,0.02)" stroke="rgba(245,245,245,0.10)" stroke-width="0.8"/>
+      <text x="204" y="152" class="eyebrow-tag" fill="#8e98ac">T2</text>
+      <text x="204" y="170" class="tier-name">Payment products</text>
+      <rect x="336" y="144" width="100" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="386" y="162" class="chip-label">Wallet</text>
+      <rect x="448" y="144" width="100" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="498" y="162" class="chip-label">Collect</text>
+      <rect x="560" y="144" width="100" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="610" y="162" class="chip-label">Payout</text>
+      <rect x="672" y="144" width="100" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="722" y="162" class="chip-label">Red packet</text>
+      <rect x="784" y="144" width="100" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="834" y="162" class="chip-label">Installments</text>
+      <rect x="896" y="144" width="100" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="946" y="162" class="chip-label">Merchant credit</text>
+      <rect x="184" y="200" width="832" height="420" rx="8" fill="rgba(245,245,245,0.02)" stroke="rgba(245,245,245,0.10)" stroke-width="0.8"/>
+      <text x="204" y="404" class="eyebrow-tag" fill="#8e98ac">T3</text>
+      <text x="204" y="422" class="tier-name">Payment core</text>
+      <rect x="336" y="216" width="660" height="60" rx="6" fill="#2d3142" stroke="rgba(245,245,245,0.20)" stroke-width="1"/>
+      <text x="352" y="250" class="domain-name">Checkout</text>
+      <rect x="464" y="232" width="120" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="524" y="250" class="chip-label">Payment methods</text>
+      <rect x="596" y="232" width="120" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="656" y="250" class="chip-label">Display order</text>
+      <rect x="728" y="232" width="120" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="788" y="250" class="chip-label">Amount</text>
+      <rect x="860" y="232" width="120" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="920" y="250" class="chip-label">Risk check</text>
+      <rect x="336" y="288" width="324" height="132" rx="6" fill="#2d3142" stroke="rgba(245,245,245,0.20)" stroke-width="1"/>
+      <text x="348" y="318" class="domain-name">Transaction center</text>
+      <rect x="348" y="336" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="394" y="354" class="chip-label">Collect</text>
+      <rect x="452" y="336" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="498" y="354" class="chip-label">Refund</text>
+      <rect x="556" y="336" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="602" y="354" class="chip-label">Card purchase</text>
+      <rect x="348" y="376" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="394" y="394" class="chip-label">Orders</text>
+      <rect x="452" y="376" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="498" y="394" class="chip-label">Promotions</text>
+      <rect x="556" y="376" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="602" y="394" class="chip-label">Pricing</text>
+      <rect x="672" y="288" width="324" height="132" rx="6" fill="#2d3142" stroke="rgba(245,245,245,0.20)" stroke-width="1"/>
+      <text x="684" y="318" class="domain-name">Clearing &amp; billing</text>
+      <rect x="684" y="336" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="730" y="354" class="chip-label">Txn pricing</text>
+      <rect x="788" y="336" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="834" y="354" class="chip-label">Clearing fees</text>
+      <rect x="892" y="336" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="938" y="354" class="chip-label">Settle fees</text>
+      <rect x="684" y="376" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="730" y="394" class="chip-label">Splitting</text>
+      <rect x="788" y="376" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="834" y="394" class="chip-label">Reconcile</text>
+      <rect x="892" y="376" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="938" y="394" class="chip-label">Exceptions</text>
+      <rect x="336" y="432" width="324" height="172" rx="6" fill="#2d3142" stroke="rgba(245,245,245,0.20)" stroke-width="1"/>
+      <text x="348" y="462" class="domain-name">Payment center</text>
+      <rect x="348" y="480" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="394" y="498" class="chip-label">Wallet pay</text>
+      <rect x="452" y="480" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="498" y="498" class="chip-label">Card pay</text>
+      <rect x="556" y="480" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="602" y="498" class="chip-label">Bank pay</text>
+      <rect x="348" y="520" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="394" y="538" class="chip-label">Balance pay</text>
+      <rect x="452" y="520" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="498" y="538" class="chip-label">Installment</text>
+      <rect x="556" y="520" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="602" y="538" class="chip-label">Credit pay</text>
+      <rect x="348" y="560" width="300" height="28" rx="4" fill="rgba(240,138,89,0.10)" stroke="#f08a59" stroke-width="1"/>
+      <text x="498" y="578" class="bar-label focal">Payment router</text>
+      <rect x="672" y="432" width="324" height="172" rx="6" fill="#2d3142" stroke="rgba(245,245,245,0.20)" stroke-width="1"/>
+      <text x="684" y="462" class="domain-name">Ledger &amp; accounting</text>
+      <rect x="684" y="480" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="730" y="498" class="chip-label">Account txn</text>
+      <rect x="788" y="480" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="834" y="498" class="chip-label">Bookkeeping</text>
+      <rect x="892" y="480" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="938" y="498" class="chip-label">Task runner</text>
+      <rect x="684" y="520" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="730" y="538" class="chip-label">Subject roll-up</text>
+      <rect x="788" y="520" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="834" y="538" class="chip-label">Day cut</text>
+      <rect x="892" y="520" width="92" height="28" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="938" y="538" class="chip-label">Trial balance</text>
+      <rect x="684" y="560" width="300" height="28" rx="4" fill="rgba(245,245,245,0.05)" stroke="#bfc0c0" stroke-width="1"/>
+      <text x="834" y="578" class="bar-label">Daily close</text>
+      <rect x="184" y="632" width="832" height="60" rx="8" fill="rgba(245,245,245,0.02)" stroke="rgba(245,245,245,0.10)" stroke-width="0.8"/>
+      <text x="204" y="656" class="eyebrow-tag" fill="#8e98ac">T4</text>
+      <text x="204" y="674" class="tier-name">Provider channels</text>
+      <rect x="336" y="648" width="156" height="28" rx="4" fill="rgba(245,245,245,0.03)" stroke="rgba(245,245,245,0.30)" stroke-width="0.8"/>
+      <text x="414" y="666" class="chip-label external">Bank rails</text>
+      <rect x="504" y="648" width="156" height="28" rx="4" fill="rgba(245,245,245,0.03)" stroke="rgba(245,245,245,0.30)" stroke-width="0.8"/>
+      <text x="582" y="666" class="chip-label external">Card networks</text>
+      <rect x="672" y="648" width="156" height="28" rx="4" fill="rgba(245,245,245,0.03)" stroke="rgba(245,245,245,0.30)" stroke-width="0.8"/>
+      <text x="750" y="666" class="chip-label external">Tax &amp; invoice</text>
+      <rect x="840" y="648" width="156" height="28" rx="4" fill="rgba(245,245,245,0.03)" stroke="rgba(245,245,245,0.30)" stroke-width="0.8"/>
+      <text x="918" y="666" class="chip-label external">Split-payout banks</text>
+      
+      <!-- Rails: one per flank, each serving every tier at once — never stacked with them -->
+      <rect x="40" y="56" width="132" height="636" rx="8" fill="rgba(191,192,192,0.05)" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="52" y="80" class="eyebrow-tag" fill="#8e98ac">CONSTRAINS</text>
+      <text x="52" y="100" class="rail-name">Risk control</text>
+      <rect x="52" y="112" width="108" height="96" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="106" y="164" class="chip-label">Transaction risk</text>
+      <rect x="52" y="268" width="108" height="96" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="106" y="320" class="chip-label">Payment risk</text>
+      <rect x="52" y="424" width="108" height="96" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="106" y="476" class="chip-label">Funds risk</text>
+      <rect x="52" y="580" width="108" height="96" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="106" y="632" class="chip-label">Risk monitoring</text>
+      <rect x="1028" y="56" width="132" height="636" rx="8" fill="rgba(191,192,192,0.05)" stroke="#bfc0c0" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="1040" y="80" class="eyebrow-tag" fill="#8e98ac">SUPPORTS</text>
+      <text x="1040" y="100" class="rail-name">Shared services</text>
+      <rect x="1040" y="112" width="108" height="84" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="1094" y="158" class="chip-label">Merchant admin</text>
+      <rect x="1040" y="208" width="108" height="84" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="1094" y="254" class="chip-label">Contracts</text>
+      <rect x="1040" y="304" width="108" height="84" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="1094" y="350" class="chip-label">Business admin</text>
+      <rect x="1040" y="400" width="108" height="84" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="1094" y="446" class="chip-label">Support desk</text>
+      <rect x="1040" y="496" width="108" height="84" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="1094" y="542" class="chip-label">Member data</text>
+      <rect x="1040" y="592" width="108" height="84" rx="4" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="1094" y="638" class="chip-label">Permissions</text>
+      
+      <!-- Legend: the five shapes are not interchangeable -->
+      <rect x="40" y="740" width="24" height="12" rx="3" fill="#2d3142" stroke="rgba(245,245,245,0.20)" stroke-width="0.8"/>
+      <text x="72" y="749" class="eyebrow-tag" fill="#8e98ac">DOMAIN</text>
+      <rect x="136" y="740" width="24" height="12" rx="3" fill="#393e53" stroke="rgba(191,192,192,0.25)" stroke-width="0.8"/>
+      <text x="168" y="749" class="eyebrow-tag" fill="#8e98ac">CAPABILITY</text>
+      <rect x="256" y="740" width="24" height="12" rx="3" fill="rgba(245,245,245,0.05)" stroke="#bfc0c0" stroke-width="0.8"/>
+      <text x="288" y="749" class="eyebrow-tag" fill="#8e98ac">SHARED · EXACTLY ONE</text>
+      <rect x="436" y="740" width="24" height="12" rx="3" fill="rgba(191,192,192,0.05)" stroke="#bfc0c0" stroke-width="0.8" stroke-dasharray="4,3"/>
+      <text x="468" y="749" class="eyebrow-tag" fill="#8e98ac">CROSS-CUTTING RAIL</text>
+      <rect x="604" y="740" width="24" height="12" rx="3" fill="rgba(245,245,245,0.03)" stroke="rgba(245,245,245,0.30)" stroke-width="0.8"/>
+      <text x="636" y="749" class="eyebrow-tag" fill="#8e98ac">OUTSIDE THE PLATFORM</text>
+      <rect x="784" y="740" width="24" height="12" rx="3" fill="rgba(240,138,89,0.10)" stroke="#f08a59" stroke-width="0.8"/>
+      <text x="816" y="749" class="eyebrow-tag" fill="#8e98ac">FOCAL</text>
+    </svg>
+  </main>
+</body>
+</html>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "文章撰写与知识沉淀"
+  short_description: "按九阶段将原始知识转成文章与配图或PPT，保留人类决策与知识记录"
+  default_prompt: "使用 $article-writing-workflow 处理我提供的原始材料，未填设置使用默认值，并在三个决策点提交成果供我确认。"

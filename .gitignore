@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.DS_Store
+# 自分自身へのインストール（install.sh .）で生じるリンク
+.claude/
+.agents/
+.codex/
+# 旧版の設計ドキュメント（個人パスを含むため非公開）
+docs/archive/

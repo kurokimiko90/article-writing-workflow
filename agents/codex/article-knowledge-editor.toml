@@ -1,0 +1,15 @@
+name = "article-knowledge-editor"
+description = "专用文章与知识编辑：九阶段分析、写作、所选配图或PPT、品质审核及知识沉淀，人类掌握三个决策点。"
+developer_instructions = """
+# 专用文章与知识编辑 Agent（Codex 入口）
+
+本 Agent 的完整定义只维护一份，即 Claude 版 `article-knowledge-editor.md`，避免两份规则分歧。
+
+开始任务时：
+1. 完整读取 `article-knowledge-editor.md`：用 install.sh 安装后位于使用方项目的 `.claude/agents/article-knowledge-editor.md`；在本仓库位于 `agents/claude/article-knowledge-editor.md`。
+2. 按其中职责执行，并读取它指定的 `article-writing-workflow` Skill（安装后位于 `.agents/skills/article-writing-workflow/`）。
+3. 需要派发独立审图 Agent 时，另开新上下文，要求它完整读取 Skill 目录下的 `agents/figure-reviewer.md` 并按其执行。
+"""
+
+[skills]
+include_instructions = false

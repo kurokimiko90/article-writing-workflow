@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diagram Design · Gallery</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --paper: #f5f4ed;
+        --paper-2: #efeee5;
+        --ink: #0b0d0b;
+        --muted: #52534e;
+        --soft: #65655c;
+        --rule: rgba(11, 13, 11, 0.12);
+        --rule-strong: rgba(11, 13, 11, 0.25);
+        --accent: #f7591f;
+        --sans: "Geist", system-ui, sans-serif;
+        --serif: "Instrument Serif", serif;
+        --mono: "Geist Mono", ui-monospace, monospace;
+
+        /* 縮圖幾何 — scale 是推導出來的，不是魔術數字：
+           內層維持 example 自己的畫布尺寸，再縮到固定的裁切窗。
+           1200 × 720 → 184 × 110。 */
+        --canvas-w: 1200px;
+        --canvas-h: 720px;
+        --thumb-w: 184px;
+        --thumb-h: 110px;
+        --thumb-scale: 0.153333;
+        --sidebar-w: 416px;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family: var(--sans);
+        background: var(--paper);
+        color: var(--ink);
+        display: grid;
+        grid-template-columns: var(--sidebar-w) 1fr;
+        grid-template-rows: auto 1fr;
+        overflow: hidden;
+      }
+      body.mode-list {
+        --sidebar-w: 264px;
+      }
+
+      /* ---------- 頂欄 ---------- */
+      .topbar {
+        grid-column: 1 / -1;
+        padding: 1rem 1.25rem 0.625rem;
+        border-bottom: 1px solid var(--rule);
+      }
+      .title-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        gap: 1rem;
+      }
+      .title-row h1 {
+        font-family: var(--serif);
+        font-size: 1.5rem;
+        font-weight: 400;
+        letter-spacing: -0.01em;
+        line-height: 1;
+      }
+      .title-row .meta {
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      .open-raw,
+      .ghost-btn {
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        text-decoration: none;
+        padding: 0.3rem 0.625rem;
+        border: 1px solid var(--rule);
+        border-radius: 4px;
+        background: transparent;
+        cursor: pointer;
+        transition:
+          color 0.15s,
+          border-color 0.15s;
+      }
+      .open-raw:hover,
+      .ghost-btn:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .ghost-btn[aria-pressed="true"] {
+        color: var(--ink);
+        border-color: var(--rule-strong);
+      }
+      .narrow-only {
+        display: none;
+      }
+
+      /* ---------- variant tabs（沿用原樣式） ---------- */
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+      }
+      .tab {
+        font-family: var(--sans);
+        font-size: 0.8125rem;
+        font-weight: 500;
+        padding: 0.375rem 0.75rem;
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--rule);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.12s;
+        letter-spacing: -0.005em;
+      }
+      .tab:hover {
+        color: var(--ink);
+        border-color: var(--rule-strong);
+      }
+      .tab:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      .tab.active {
+        background: var(--ink);
+        color: var(--paper);
+        border-color: var(--ink);
+      }
+
+      /* ---------- 側欄 ---------- */
+      .sidebar {
+        grid-column: 1;
+        grid-row: 2;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+        border-right: 1px solid var(--rule);
+        padding: 0.75rem;
+        background: var(--paper);
+      }
+      #type-tabs {
+        display: grid;
+      }
+      .mode-thumb #type-tabs {
+        grid-template-columns: repeat(2, var(--thumb-w));
+        justify-content: center;
+        gap: 0.75rem 0.5rem;
+      }
+      .mode-list #type-tabs {
+        grid-template-columns: 1fr;
+        gap: 0.125rem;
+      }
+
+      .card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+        cursor: pointer;
+        color: var(--muted);
+        border: 1px solid transparent;
+        border-radius: 5px;
+        transition: color 0.12s;
+      }
+      .card:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .card:hover {
+        color: var(--ink);
+      }
+      .card.active {
+        color: var(--ink);
+      }
+      .mode-list .card {
+        flex-direction: row;
+        align-items: baseline;
+        gap: 0.4rem;
+        padding: 0.3rem 0.5rem;
+      }
+      .mode-list .card:hover {
+        border-color: var(--rule);
+      }
+      .mode-list .card.active {
+        background: var(--ink);
+        color: var(--paper);
+        border-color: var(--ink);
+      }
+
+      .thumb-frame {
+        width: var(--thumb-w);
+        height: var(--thumb-h);
+        overflow: hidden;
+        position: relative;
+        border: 1px solid var(--rule);
+        border-radius: 4px;
+        background: var(--paper);
+        transition:
+          border-color 0.12s,
+          box-shadow 0.12s;
+      }
+      .mode-list .thumb-frame {
+        display: none;
+      }
+      .card:hover .thumb-frame {
+        border-color: var(--rule-strong);
+      }
+      .card.active .thumb-frame {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(247, 89, 31, 0.22);
+      }
+      .thumb-scale {
+        width: var(--canvas-w);
+        height: var(--canvas-h);
+        transform: scale(var(--thumb-scale));
+        transform-origin: top left;
+        pointer-events: none;
+      }
+      .thumb-scale iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+        background: var(--paper);
+      }
+
+      .caption {
+        display: flex;
+        align-items: baseline;
+        gap: 0.3rem;
+        font-size: 0.78rem;
+        font-weight: 500;
+        line-height: 1.25;
+        letter-spacing: -0.005em;
+      }
+      .caption .eyebrow {
+        font-family: var(--mono);
+        font-size: 0.56rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: inherit;
+        opacity: 0.5;
+        flex: 0 0 auto;
+      }
+      .card.new .caption::after {
+        content: "NEW";
+        font-family: var(--mono);
+        font-size: 0.54rem;
+        letter-spacing: 0.12em;
+        color: var(--accent);
+        align-self: center;
+        flex: 0 0 auto;
+      }
+      .mode-list .card.active.new .caption::after {
+        color: var(--paper);
+      }
+
+      /* ---------- 主預覽 ---------- */
+      main {
+        grid-column: 2;
+        grid-row: 2;
+        position: relative;
+        background: var(--paper-2);
+        overflow: hidden;
+      }
+      #preview {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: var(--paper);
+        display: block;
+      }
+
+      .scrim {
+        display: none;
+      }
+
+      /* ---------- 窄螢幕：側欄收成抽屜 ---------- */
+      @media (max-width: 980px) {
+        body,
+        body.mode-list {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          width: min(var(--sidebar-w), 88vw);
+          z-index: 20;
+          padding-top: 1rem;
+          transform: translateX(-100%);
+          transition: transform 0.18s ease;
+          box-shadow: 0 0 24px rgba(0, 0, 0, 0.12);
+        }
+        body.nav-open .sidebar {
+          transform: translateX(0);
+        }
+        body.nav-open .scrim {
+          display: block;
+          position: fixed;
+          inset: 0;
+          z-index: 15;
+          background: rgba(11, 13, 11, 0.28);
+        }
+        main {
+          grid-column: 1;
+        }
+        .narrow-only {
+          display: inline-block;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .sidebar {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="mode-thumb">
+    <header class="topbar">
+      <div class="title-row">
+        <h1>
+          Diagram Design
+          <span class="meta" style="margin-left: 0.5rem">· gallery</span>
+        </h1>
+        <div class="actions">
+          <button
+            class="ghost-btn narrow-only"
+            id="nav-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="type-tabs"
+          >
+            ☰ types
+          </button>
+          <button
+            class="ghost-btn"
+            id="mode-toggle"
+            type="button"
+            aria-pressed="true"
+          >
+            ☰ list
+          </button>
+          <a class="open-raw" href="icons.html" target="_blank" rel="noopener"
+            >icon library ↗</a
+          >
+          <a
+            class="open-raw"
+            id="open-raw"
+            href="#"
+            target="_blank"
+            rel="noopener"
+            >open in new tab ↗</a
+          >
+        </div>
+      </div>
+
+      <div
+        class="tabs variants"
+        id="variant-tabs"
+        role="radiogroup"
+        aria-label="Variant"
+      >
+        <button class="tab active" data-variant="">Minimal light</button>
+        <button class="tab" data-variant="-dark">Minimal dark</button>
+        <button class="tab" data-variant="-full">Full editorial</button>
+      </div>
+    </header>
+
+    <nav class="sidebar" aria-label="Diagram type">
+      <div id="type-tabs" role="radiogroup" aria-label="Diagram type">
+        <div class="card active" data-type="architecture">
+          <span class="caption"><span class="eyebrow">01</span>Architecture</span>
+        </div>
+        <div class="card" data-type="flowchart">
+          <span class="caption"><span class="eyebrow">02</span>Flowchart</span>
+        </div>
+        <div class="card" data-type="sequence">
+          <span class="caption"><span class="eyebrow">03</span>Sequence</span>
+        </div>
+        <div class="card" data-type="state">
+          <span class="caption"><span class="eyebrow">04</span>State</span>
+        </div>
+        <div class="card" data-type="er">
+          <span class="caption"><span class="eyebrow">05</span>ER</span>
+        </div>
+        <div class="card" data-type="timeline">
+          <span class="caption"><span class="eyebrow">06</span>Timeline</span>
+        </div>
+        <div class="card" data-type="swimlane">
+          <span class="caption"><span class="eyebrow">07</span>Swimlane</span>
+        </div>
+        <div class="card" data-type="quadrant">
+          <span class="caption"><span class="eyebrow">08</span>Quadrant</span>
+        </div>
+        <div class="card new" data-type="nested">
+          <span class="caption"><span class="eyebrow">09</span>Nested</span>
+        </div>
+        <div class="card new" data-type="tree">
+          <span class="caption"><span class="eyebrow">10</span>Tree</span>
+        </div>
+        <div class="card new" data-type="org-chart">
+          <span class="caption"><span class="eyebrow">11</span>Org chart</span>
+        </div>
+        <div class="card new" data-type="layers">
+          <span class="caption"><span class="eyebrow">12</span>Layers</span>
+        </div>
+        <div class="card new" data-type="venn">
+          <span class="caption"><span class="eyebrow">13</span>Venn</span>
+        </div>
+        <div class="card new" data-type="pyramid">
+          <span class="caption"><span class="eyebrow">14</span>Pyramid</span>
+        </div>
+        <div class="card new" data-type="radar">
+          <span class="caption"><span class="eyebrow">15</span>Radar</span>
+        </div>
+        <div class="card new" data-type="loop">
+          <span class="caption"><span class="eyebrow">16</span>Loop</span>
+        </div>
+        <div class="card new" data-type="datalake">
+          <span class="caption"><span class="eyebrow">17</span>Data lake</span>
+        </div>
+        <div class="card new" data-type="bar">
+          <span class="caption"><span class="eyebrow">18</span>Bar</span>
+        </div>
+        <div class="card new" data-type="line">
+          <span class="caption"><span class="eyebrow">19</span>Line</span>
+        </div>
+        <div class="card new" data-type="gantt">
+          <span class="caption"><span class="eyebrow">20</span>Gantt</span>
+        </div>
+        <div class="card new" data-type="scatter">
+          <span class="caption"><span class="eyebrow">21</span>Scatter</span>
+        </div>
+        <div class="card new" data-type="medallion">
+          <span class="caption"><span class="eyebrow">22</span>Medallion</span>
+        </div>
+        <div class="card new" data-type="high-level">
+          <span class="caption"><span class="eyebrow">23</span>High-Level</span>
+        </div>
+        <div class="card new" data-type="process">
+          <span class="caption"><span class="eyebrow">24</span>Process</span>
+        </div>
+        <div class="card new" data-type="data-flow">
+          <span class="caption"><span class="eyebrow">26</span>Data flow</span>
+        </div>
+        <div class="card new" data-type="dp-integration">
+          <span class="caption"
+            ><span class="eyebrow">27</span>DP integration</span
+          >
+        </div>
+        <div class="card new" data-type="high-level-vertical">
+          <span class="caption"
+            ><span class="eyebrow">28</span>High-Level / Parametric</span
+          >
+        </div>
+        <div class="card new" data-type="treemap">
+          <span class="caption"><span class="eyebrow">29</span>Treemap</span>
+        </div>
+        <div class="card new" data-type="slopegraph">
+          <span class="caption"
+            ><span class="eyebrow">30</span>Line · slopegraph</span
+          >
+        </div>
+        <div class="card new" data-type="ecosystem">
+          <span class="caption"><span class="eyebrow">31</span>Ecosystem</span>
+        </div>
+        <div class="card new" data-type="dp-security-matrix">
+          <span class="caption"
+            ><span class="eyebrow">32</span>DP security matrix</span
+          >
+        </div>
+        <div class="card new" data-type="it-state">
+          <span class="caption"
+            ><span class="eyebrow">33</span>IT current-state</span
+          >
+        </div>
+        <div class="card new" data-type="platform-stack">
+          <span class="caption"
+            ><span class="eyebrow">34</span>Platform stack</span
+          >
+        </div>
+        <div class="card new" data-type="capability-map">
+          <span class="caption"
+            ><span class="eyebrow">35</span>Capability map</span
+          >
+        </div>
+        <div class="card new" data-type="contrast-panels">
+          <span class="caption"
+            ><span class="eyebrow">36</span>Contrast panels</span
+          >
+        </div>
+        <div class="card new" data-type="rooted-outcomes">
+          <span class="caption"
+            ><span class="eyebrow">37</span>Rooted outcomes</span
+          >
+        </div>
+        <div class="card new" data-type="concept-panorama">
+          <span class="caption"
+            ><span class="eyebrow">38</span>Concept panorama</span
+          >
+        </div>
+        <div class="card new" data-type="sequence-oauth">
+          <span class="caption"
+            ><span class="eyebrow">38</span>Sequence · OAuth</span
+          >
+        </div>
+        <div class="card new" data-type="import-drawio" data-single>
+          <span class="caption"
+            ><span class="eyebrow">39</span>Import · draw.io</span
+          >
+        </div>
+        <div class="card new" data-type="import-mermaid" data-single>
+          <span class="caption"
+            ><span class="eyebrow">40</span>Import · Mermaid</span
+          >
+        </div>
+        <div class="card new" data-type="quadrant-consultant" data-single>
+          <span class="caption"
+            ><span class="eyebrow">41</span>Quadrant · consultant</span
+          >
+        </div>
+        <div class="card new" data-type="loop-terminal" data-single>
+          <span class="caption"
+            ><span class="eyebrow">42</span>Loop · terminal</span
+          >
+        </div>
+        <div class="card new" data-type="policy-trace-animated" data-single>
+          <span class="caption"
+            ><span class="eyebrow">43</span>Policy trace · animated</span
+          >
+        </div>
+        <div class="card new" data-type="queue-animated" data-single>
+          <span class="caption"
+            ><span class="eyebrow">44</span>Fan-in queue · animated</span
+          >
+        </div>
+        <div class="card new" data-type="paved-road-animated" data-single>
+          <span class="caption"
+            ><span class="eyebrow">45</span>Secure paved road · animated</span
+          >
+        </div>
+      </div>
+    </nav>
+
+    <div class="scrim" id="scrim"></div>
+
+    <main>
+      <iframe
+        id="preview"
+        src="example-architecture.html"
+        title="Preview"
+      ></iframe>
+    </main>
+
+    <script>
+      const state = { type: "architecture", variant: "" };
+      const iframe = document.getElementById("preview");
+      const openRaw = document.getElementById("open-raw");
+      const sidebar = document.querySelector(".sidebar");
+      const typeCards = [...document.querySelectorAll("#type-tabs .card")];
+
+      /* 縮圖在執行期組出來：原始碼每個 type 只佔一行，
+         而且 list 模式下完全不會碰到任何 iframe。 */
+      typeCards.forEach((card) => {
+        const frame = document.createElement("div");
+        frame.className = "thumb-frame";
+        const scale = document.createElement("div");
+        scale.className = "thumb-scale";
+        const thumb = document.createElement("iframe");
+        thumb.setAttribute("tabindex", "-1");
+        thumb.setAttribute("aria-hidden", "true");
+        thumb.setAttribute("scrolling", "no");
+        thumb.setAttribute("loading", "lazy");
+        thumb.title = "";
+        scale.appendChild(thumb);
+        frame.appendChild(scale);
+        frame.dataset.src = `example-${card.dataset.type}.html`;
+        frame.dataset.animated = String(card.dataset.type.endsWith("-animated"));
+        card.prepend(frame);
+      });
+
+      function loadThumb(frame) {
+        const thumb = frame.querySelector("iframe");
+        if (thumb.dataset.loaded === "1") return;
+        thumb.src = frame.dataset.src;
+        thumb.dataset.loaded = "1";
+      }
+      function unloadThumb(frame) {
+        const thumb = frame.querySelector("iframe");
+        if (thumb.dataset.loaded !== "1") return;
+        thumb.src = "about:blank";
+        thumb.dataset.loaded = "";
+      }
+
+      /* animated 範例離開視窗就卸載，避免在畫面外持續重繪；
+         靜態的留著，切回來不會閃一下。 */
+      const thumbObserver = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) loadThumb(entry.target);
+            else if (entry.target.dataset.animated === "true")
+              unloadThumb(entry.target);
+          }
+        },
+        { root: sidebar, rootMargin: "240px 0px" },
+      );
+
+      /* ---------- 側欄模式：list | thumb ---------- */
+      const MODE_KEY = "diagram-gallery-nav-mode";
+      const modeToggle = document.getElementById("mode-toggle");
+      let mode = "thumb";
+      try {
+        const saved = localStorage.getItem(MODE_KEY);
+        if (saved === "list" || saved === "thumb") mode = saved;
+      } catch {
+        /* file:// 下可能被擋 — 退回預設值 */
+      }
+
+      function applyMode() {
+        document.body.classList.toggle("mode-thumb", mode === "thumb");
+        document.body.classList.toggle("mode-list", mode === "list");
+        modeToggle.setAttribute("aria-pressed", String(mode === "thumb"));
+        modeToggle.textContent = mode === "thumb" ? "☰ list" : "▤ thumbnails";
+        const frames = document.querySelectorAll(".thumb-frame");
+        if (mode === "thumb") {
+          frames.forEach((frame) => thumbObserver.observe(frame));
+        } else {
+          frames.forEach((frame) => {
+            thumbObserver.unobserve(frame);
+            if (frame.dataset.animated === "true") unloadThumb(frame);
+          });
+        }
+        scrollActiveIntoView();
+      }
+
+      modeToggle.addEventListener("click", () => {
+        mode = mode === "thumb" ? "list" : "thumb";
+        try {
+          localStorage.setItem(MODE_KEY, mode);
+        } catch {
+          /* 偏好無法保存，但這個 session 仍可正常使用 */
+        }
+        applyMode();
+      });
+
+      /* ---------- 窄螢幕抽屜 ---------- */
+      const navToggle = document.getElementById("nav-toggle");
+      const scrim = document.getElementById("scrim");
+      function setNav(open) {
+        document.body.classList.toggle("nav-open", open);
+        navToggle.setAttribute("aria-expanded", String(open));
+      }
+      navToggle.addEventListener("click", () =>
+        setNav(!document.body.classList.contains("nav-open")),
+      );
+      scrim.addEventListener("click", () => setNav(false));
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setNav(false);
+      });
+
+      /* ---------- 選取 ---------- */
+      function scrollActiveIntoView() {
+        const active = document.querySelector("#type-tabs .card.active");
+        if (active) active.scrollIntoView({ block: "nearest", inline: "nearest" });
+      }
+
+      function update() {
+        const activeType = typeCards.find(
+          (card) => card.dataset.type === state.type,
+        );
+        const single = activeType && activeType.hasAttribute("data-single");
+        const variantTabs = document.querySelectorAll("#variant-tabs .tab");
+        if (single) state.variant = "";
+        variantTabs.forEach((tab) => {
+          tab.disabled = single && tab.dataset.variant !== "";
+        });
+        for (const [containerId, key, selector] of [
+          ["type-tabs", "type", ".card"],
+          ["variant-tabs", "variant", ".tab"],
+        ]) {
+          document
+            .querySelectorAll(`#${containerId} ${selector}`)
+            .forEach((item) => {
+              const active = item.dataset[key] === state[key];
+              item.classList.toggle("active", active);
+              item.setAttribute("aria-checked", String(active));
+              item.tabIndex = active ? 0 : -1;
+            });
+        }
+        const src = `example-${state.type}${state.variant}.html`;
+        iframe.src = src;
+        openRaw.href = src;
+        const selectedItems = document.querySelectorAll(
+          '[role="radio"][aria-checked="true"]',
+        );
+        iframe.setAttribute(
+          "aria-labelledby",
+          [...selectedItems].map((item) => item.id).join(" "),
+        );
+      }
+
+      function bindTabs(containerId, key, selector, columnsFn) {
+        const container = document.getElementById(containerId);
+        const items = [...container.querySelectorAll(selector)];
+        items.forEach((item, index) => {
+          item.id = `${containerId}-${index}`;
+          item.setAttribute("role", "radio");
+          item.setAttribute("aria-controls", "preview");
+        });
+
+        function activate(item, focus = false) {
+          state[key] = item.dataset[key];
+          update();
+          if (focus) item.focus();
+          if (key === "type") {
+            scrollActiveIntoView();
+            setNav(false);
+          }
+        }
+
+        container.addEventListener("click", (event) => {
+          const item = event.target.closest(selector);
+          if (!item || item.disabled) return;
+          activate(item);
+        });
+        container.addEventListener("keydown", (event) => {
+          const current = event.target.closest('[role="radio"]');
+          if (!current || !container.contains(current)) return;
+          if (event.key === " " || event.key === "Enter") {
+            event.preventDefault();
+            activate(current, true);
+            return;
+          }
+          const enabled = items.filter((item) => !item.disabled);
+          const index = enabled.indexOf(current);
+          const count = enabled.length;
+          const columns = columnsFn();
+          let next;
+          if (event.key === "ArrowRight") next = enabled[(index + 1) % count];
+          if (event.key === "ArrowLeft")
+            next = enabled[(index - 1 + count) % count];
+          if (event.key === "ArrowDown")
+            next = enabled[Math.min(index + columns, count - 1)];
+          if (event.key === "ArrowUp")
+            next = enabled[Math.max(index - columns, 0)];
+          if (event.key === "Home") next = enabled[0];
+          if (event.key === "End") next = enabled.at(-1);
+          if (!next || next === current) return;
+          event.preventDefault();
+          activate(next, true);
+        });
+      }
+
+      bindTabs("type-tabs", "type", ".card", () => (mode === "thumb" ? 2 : 1));
+      bindTabs("variant-tabs", "variant", ".tab", () => 1);
+      applyMode();
+      update();
+    </script>
+  </body>
+</html>
