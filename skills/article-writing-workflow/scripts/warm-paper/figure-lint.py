@@ -18,7 +18,8 @@ import struct
 import sys
 from pathlib import Path
 
-LIME = ("#D9F05B", "#EEF6C8", "#EEF8C2", "var(--mark)", "var(--mark-soft)")
+LIME = ("#D9F05B", "#EEF6C8", "#EEF8C2", "var(--mark)", "var(--mark-soft)",
+        "#FF3B1F", "#FFE7E1")  # swiss-red の焦点（2026-10-30）
 KANA = re.compile(r"[぀-ヿ]")
 # 簡体字にしかない字（日本語の文章にはまず出ない）
 SIMPLIFIED = set("这们说图题问还进对时为发过样么个见读讲则关审议选设计产应让谁钱较层环节线车门间实现单页阶")

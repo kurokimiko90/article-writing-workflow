@@ -41,6 +41,8 @@ Individual steps (run in order)
 
 After step 4, open each PNG and check legend wording still matches the colours (e.g. a legend swatch may need manual correction).
 
+5. **Default for published figures (2026-10-30):** `python3 swiss-red-skin.py <diagrams_dir> <diagrams-C_dir> --article article.md` re-skins the passed warm-paper figures into **swiss-red** (C: ink lines, one vermilion focus, 56px title + 8px rule) without touching the sources. Mark the focus with lime / the mark-soft box in the warm-paper source — the skin turns exactly those red and every teal accent ink. Rules: `swiss-red.md`.
+
 ## Tokens
 
 | Role | Purpose | Light |
