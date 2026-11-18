@@ -54,7 +54,6 @@ notes: article-writing-workflow — 说明型配图的默认皮肤（用户 2026
 - 顶部一条 10px 墨线，和配图标题线呼应。
 - 示意图形用白卡片加 3–4px 墨框，不旋转，不加投影。
 - 头像后面放一个 `#E4E1D8` 灰圆，头像描边是白边外面再加一圈墨色细线。
-- 范例：`exports/articles/ja/article-writing-workflow-story/visuals/cover/cover.html`。
 
 ## 已知限制
 
