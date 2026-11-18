@@ -22,7 +22,24 @@ nav.toc b{display:block;margin-bottom:6px;color:var(--muted);font-size:13px;lett
 nav.toc ol{margin:0;padding-left:1.4em}nav.toc ol ol{padding-left:1.1em;font-size:14px}nav.toc li{margin:.15em 0}
 nav.toc a{color:var(--ink);text-decoration:none}nav.toc a:hover{color:var(--teal);text-decoration:underline}
 @media print{nav.toc{display:none}}
+:root{--src-bg:#ebe4d6;--todo:#a3541a;--todo-bg:#f6e3cf}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--src-bg:#2a2e2a;--todo:#f0b27a;--todo-bg:#3a2e22}}
+.src{display:inline-block;margin:0 .2em;padding:0 .55em;border-radius:999px;background:var(--src-bg);color:var(--muted);font-size:12px;line-height:1.75;vertical-align:.12em;white-space:normal;font-weight:400}
+.src.ai{background:transparent;border:1px dashed var(--muted)}
+.src.todo{background:var(--todo-bg);color:var(--todo);font-weight:600}
+body.hide-src .src:not(.todo){display:none}
+.src-toggle{position:fixed;right:16px;bottom:16px;z-index:9;padding:8px 14px;border:1px solid var(--rule);border-radius:999px;background:var(--bg);color:var(--ink);font:13px/1 inherit;cursor:pointer}
+.legend{font-size:13px;color:var(--muted);margin:-24px 0 32px}.legend .src{margin-left:0}
+.tbl{overflow-x:auto;margin:0 0 1.4em}table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.7}
+th,td{border-bottom:1px solid var(--rule);padding:8px 10px;text-align:left;vertical-align:top}th{color:var(--muted);font-weight:600;font-size:14px}
+li.sub{margin-left:1.4em;list-style:circle}
+@media print{.src-toggle{display:none}}
 """
+# 【来源／状态】タグは本文から分けてチップ表示（AI 推測＝破線、待補＝強調、その他＝薄色）
+def tag(m):
+    t=m[1]; cls='todo' if re.search(r'待[补補]',t) else ('ai' if 'AI' in t else '')
+    return f'<span class="src {cls}">{t}</span>'
+JS = """<button class="src-toggle" type="button" onclick="document.body.classList.toggle('hide-src');this.textContent=document.body.classList.contains('hide-src')?'显示来源':'隐藏来源'">隐藏来源</button>"""
 src,dst=sys.argv[1],sys.argv[2]
 md=open(src).read().splitlines(); out=[];inlist=None;para=[];title='';toc=[]
 # 見出しに id を振り、h1 の直後に目次（クリックで該当章へ移動）を差し込む
@@ -40,18 +57,36 @@ def toc_html():
         items.append(f'<li><a href="#{hid}">{inline(text)}</a>'+('</li>' if level==3 else ''))
     items.append('</ol></li>' if open_sub else '</li>')
     return f'<nav class="toc" aria-label="{label}"><b>{label}</b><ol>'+''.join(items)+'</ol></nav>'
-def inline(t): return re.sub(r'\*\*(.+?)\*\*',r'<strong>\1</strong>',html.escape(t,quote=False))
+def inline(t):
+    s=re.sub(r'\*\*(.+?)\*\*',r'<strong>\1</strong>',html.escape(t,quote=False))
+    return re.sub(r'【([^】]+)】',tag,s)
+table=[]
+def flushtable():
+    global table
+    if not table: return
+    rows=[[c.strip() for c in r.strip().strip('|').split('|')] for r in table if not re.match(r'^\s*\|[\s:|-]+\|\s*$',r)]
+    head,body=rows[0],rows[1:]
+    out.append('<div class="tbl"><table><thead><tr>'+''.join(f'<th>{inline(c)}</th>' for c in head)+'</tr></thead><tbody>'
+               +''.join('<tr>'+''.join(f'<td>{inline(c)}</td>' for c in r)+'</tr>' for r in body)+'</tbody></table></div>')
+    table=[]
 def flush():
     global para
     if para: out.append('<p>'+inline(''.join(para))+'</p>'); para=[]
 def closelist():
     global inlist
     if inlist: out.append('</%s>'%inlist); inlist=None
+fig_open=False
 for l in md:
+    if l.lstrip().startswith('|'): flush(); closelist(); table.append(l); continue
+    flushtable()
     if not l.strip(): flush(); closelist(); continue
+    if inlist and re.match(r'^\s{2,}\S',l):
+        out.append('<li class="sub">'+inline(re.sub(r'^\s+(- )?','',l))+'</li>'); continue
     m=re.match(r'!\[(.*?)\]\((.*?)\)',l)
-    if m: flush();closelist(); out.append(f'<figure><a href="{m[2]}" target="_blank"><img src="{m[2]}" alt="{html.escape(m[1])}" loading="lazy"></a>'); continue
-    if re.match(r'^\*[图図圖].*\*$',l): out.append('<figcaption>'+inline(l.strip('*'))+'</figcaption></figure>'); continue
+    if re.match(r'^\*[图図圖].*\*$',l):
+        out.append('<figcaption>'+inline(l.strip('*'))+'</figcaption>'+('</figure>' if fig_open else '')); fig_open=False; continue
+    if fig_open: out.append('</figure>'); fig_open=False  # 图说缺失时也要关闭 figure，否则图层层嵌套越放越大
+    if m: flush();closelist(); out.append(f'<figure><a href="{m[2]}" target="_blank"><img src="{m[2]}" alt="{html.escape(m[1])}" loading="lazy"></a>'); fig_open=True; continue
     if l.startswith('# '): title=l[2:]; out.append('<h1>'+inline(title)+'</h1>'); continue
     if l.startswith('### '): flush();closelist(); out.append(heading(3,l[4:])); continue
     if l.startswith('## '): flush();closelist(); out.append(heading(2,l[3:])); continue
@@ -65,8 +100,12 @@ for l in md:
         if inlist!='ul': closelist(); out.append('<ul>'); inlist='ul'
         out.append('<li>'+inline(l[2:])+'</li>'); continue
     para.append(l)
-flush();closelist()
-if out and out[0].startswith('<h1>'): out.insert(1,toc_html())
+flushtable();flush();closelist()
+if fig_open: out.append('</figure>')
+has_src=any('class="src' in o for o in out)
+if out and out[0].startswith('<h1>'):
+    out.insert(1,toc_html())
+    if has_src: out.insert(1,'<p class="legend">标记：<span class="src">来源</span><span class="src ai">AI 推测</span><span class="src todo">待补</span></p>')
 lang='ja' if re.search(r'[぀-ヿ]',title) else 'zh-Hans'
 # 配図密度：表示行（中国語 約40字／日本語 約44字）で数え、図のない区間が 10 行を超えたら知らせる
 def figure_gaps(lines,cpl,limit=10):
@@ -81,4 +120,4 @@ def figure_gaps(lines,cpl,limit=10):
     return gaps
 for n,s,e in figure_gaps(md,44 if lang=='ja' else 40):
     print(f'  ! 図のない区間が {n} 行（10 行超）: {src} L{s}-L{e}')
-open(dst,'w').write(f'<!doctype html><html lang="{lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)}</title><style>{CSS}</style></head><body><main>\n'+'\n'.join(out)+'\n</main></body></html>')
+open(dst,'w').write(f'<!doctype html><html lang="{lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)}</title><style>{CSS}</style></head><body><main>\n'+'\n'.join(out)+'\n</main>'+(JS if has_src else '')+'</body></html>')
